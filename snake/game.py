@@ -1,4 +1,5 @@
 
+import copy
 import random as r
 from   typing import Union
 
@@ -61,6 +62,9 @@ class Position(object):
         - the string representation of the position
         """
         return str(tuple(self))
+
+    def distance(self, other:'Position') -> int:
+        return abs(self.x - other.x) + abs(self.y - other.y)
 
     def move(self, dir:int) -> 'Position':
         """
@@ -161,12 +165,12 @@ class SnakeStatus(object):
         Return
         - The new status
         """
-        self.bounds = bounds
-        self.snake = snake
-        self.apple = apple
-        self.score = score
-        self.alive = alive
-        self.won = won
+        self.bounds = copy.deepcopy(bounds)
+        self.snake  = copy.deepcopy(snake)
+        self.apple  = copy.deepcopy(apple)
+        self.score  = copy.deepcopy(score)
+        self.alive  = copy.deepcopy(alive)
+        self.won    = copy.deepcopy(won)
 
     def __iter__(self) -> Union[tuple[int,int,int,int], list[Position],
             Position, int, bool, bool]:
@@ -194,7 +198,7 @@ class SnakeStatus(object):
         """
         return \
         f"""Bounds: {self.bounds}
-        Snake:  {(str(p) + ' > ' for p in self.snake)}
+        Snake:  {' > '.join([str(pos) for pos in self.snake])}
         Apple:  {str(self.apple)}
         Score:  {self.score}
         Alive:  {self.alive}
@@ -268,6 +272,7 @@ class Snake(object):
                 # Endgame condition (win)
                 if len(self.snake) == self.width * self.height:
                     self.win = True
+                    self.apple = Position(-1, -1)
                 else:
                     self.apple = Position.random_position(self.bounds, taboo=self.snake)
 
