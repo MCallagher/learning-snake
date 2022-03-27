@@ -1,5 +1,6 @@
 
 import random as r
+from   typing import Union
 
 class Position(object):
     """
@@ -143,6 +144,64 @@ class Position(object):
         return r.choice(positions)
 
 
+class SnakeStatus(object):
+    def __init__(self, bounds:tuple[int,int,int,int], snake:list[Position], apple:Position,
+            score:int, alive:bool, won:bool) -> 'SnakeStatus':
+        """
+        Create an object that represents the status of the snake game.
+
+        Params
+        - bounds: the bounds of the board (left, top, right, bottom)
+        - snake: the snake position
+        - apple: the apple position
+        - score: the score
+        - alive: the flag which indicates if the snake is alive
+        - won: the flag that indicates if the player has won
+
+        Return
+        - The new status
+        """
+        self.bounds = bounds
+        self.snake = snake
+        self.apple = apple
+        self.score = score
+        self.alive = alive
+        self.won = won
+
+    def __iter__(self) -> Union[tuple[int,int,int,int], list[Position],
+            Position, int, bool, bool]:
+        """
+        Iterate over the elemements of the status, in order: bounds (left, top,
+            right, bottom), snake position (tail to head), apple position,
+            score, is alive flag, has won flag.
+
+        Return
+        - An element of the status
+        """
+        yield self.bounds
+        yield self.snake
+        yield self.apple
+        yield self.score
+        yield self.alive
+        yield self.won
+
+    def __str__(self):
+        """
+        Return the string representation of the status.
+
+        Return
+        - the string representation of the status
+        """
+        return \
+        f"""Bounds: {self.bounds}
+        Snake:  {(str(p) + ' > ' for p in self.snake)}
+        Apple:  {str(self.apple)}
+        Score:  {self.score}
+        Alive:  {self.alive}
+        Won:    {self.won}
+        """
+
+
 class Snake(object):
     """
     Describe a game of snake.
@@ -251,14 +310,11 @@ class Snake(object):
         """
         return self.score
 
-    def get_status(self) -> tuple[tuple[int,int,int,int], list[Position],
-            Position, int, bool, bool]:
+    def get_status(self) -> SnakeStatus:
         """
         Get the current status of the game.
 
         Return
-        - the status of the game, as bounds (left, top, right, bottom), snake
-            position (tail to head), apple position, score, is alive flag, has
-            won flag
+        - the status of the game
         """
-        return (self.bounds, self.snake, self.apple, self.score, self.alive, self.win)
+        return SnakeStatus(self.bounds, self.snake, self.apple, self.score, self.alive, self.win)
