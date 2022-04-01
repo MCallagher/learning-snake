@@ -230,6 +230,7 @@ class Snake(object):
         self.score  = 0
         self.alive  = True
         self.win    = False
+        self.starving = width * height * 2
 
     def play(self, dir:int) -> None:
         """
@@ -268,6 +269,7 @@ class Snake(object):
             # become the head of the snake, then the apple respawn elsewhere
             if apple_eaten:
                 self.score += 1
+                self.starving = self.width * self.height * 2
                 
                 # Endgame condition (win)
                 if len(self.snake) == self.width * self.height:
@@ -280,6 +282,10 @@ class Snake(object):
             # hence the tail moves forward too
             else:
                 self.snake.pop(0)
+                self.starving -= 1
+
+        if self.starving == 0:
+            self.alive = False
 
     def get_snake_head_position(self) -> Position:
         """
