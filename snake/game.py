@@ -17,6 +17,8 @@ class Position(object):
     """Indicate the right direction"""
     DOWN = 3
     """Indicate the downward direction"""
+    DIRECTIONS = [LEFT, UP, RIGHT, DOWN]
+    """The list of possible directions"""
 
     def __init__(self, x:int, y:int) -> 'Position':
         """
